@@ -38,7 +38,22 @@ namespace CourseItr
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddAuthentication().AddMicrosoftAccount(microsoftOptions =>
+            {
+                microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"];
+                microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
 
+            })
+                   .AddGoogle(options =>
+                   {
+                       IConfigurationSection googleAuthNSection =
+                           Configuration.GetSection("Authentication:Google");
+
+                       options.ClientId = googleAuthNSection["ClientId"];
+                       options.ClientSecret = googleAuthNSection["ClientSecret"];
+
+
+                   });
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
