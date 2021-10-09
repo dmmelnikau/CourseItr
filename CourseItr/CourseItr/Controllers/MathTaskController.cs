@@ -60,7 +60,7 @@ namespace CourseItr.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,MathTopicId")] MathTask mathTask)
+        public async Task<IActionResult> Create([Bind("Id,Name,Condition,MathTopicId")] MathTask mathTask)
         {
             if (ModelState.IsValid)
             {
@@ -94,7 +94,7 @@ namespace CourseItr.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,MathTopicId")] MathTask mathTask)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Condition,MathTopicId")] MathTask mathTask)
         {
             if (id != mathTask.Id)
             {

@@ -10,6 +10,7 @@ namespace CourseItr.Models
     {
         [Key]
         public int Id { get; set; }
+        public string Condition { get; set; }
         public string Name { get; set; }
         public int? MathTopicId { get; set; }
         public MathTopic MathTopic { get; set; }

@@ -18,8 +18,13 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Condition" class="control-label"></label>
+                <textarea asp-for="Condition" class="form-control"></textarea>
+                <span asp-validation-for="Condition" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="MathTopicId" class="control-label"></label>
-                <select asp-for="MathTopicId" class ="form-control" asp-items="ViewBag.Topics"></select>
+                <select asp-for="MathTopicId" class="form-control" asp-items="ViewBag.Topics"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
