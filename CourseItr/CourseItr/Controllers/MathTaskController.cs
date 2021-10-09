@@ -12,18 +12,20 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System.IO;
-
+using System.Web;
+using Microsoft.AspNetCore.Hosting;
 namespace CourseItr.Controllers
 {
     public class MathTaskController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
-        public MathTaskController(ApplicationDbContext context,IConfiguration configuration)
+        private IWebHostEnvironment hostingEnv;
+        public MathTaskController(ApplicationDbContext context,IConfiguration configuration, IWebHostEnvironment env)
         {
             _context = context;
             _configuration = configuration;
-
+            this.hostingEnv = env;
 
         }
 
@@ -57,11 +59,12 @@ namespace CourseItr.Controllers
         {
             return View();
         }
+       
         [HttpPost]
-        public async Task<IActionResult> Upload(IFormFile files)
+        public async Task<IActionResult> Upload(IFormFile file)
         {
+            
             string blobstorageconnection = _configuration.GetValue<string>("blobstorage");
-
             byte[] dataFiles;
             // Retrieve storage account from connection string.
             CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(blobstorageconnection);
@@ -74,19 +77,20 @@ namespace CourseItr.Controllers
             {
                 PublicAccess = BlobContainerPublicAccessType.Blob
             };
-            string systemFileName = files.FileName;
+            string systemFileName = file.FileName;
             await cloudBlobContainer.SetPermissionsAsync(permissions);
             await using (var target = new MemoryStream())
             {
-                files.CopyTo(target);
+                file.CopyTo(target);
                 dataFiles = target.ToArray();
             }
             // This also does not make a service call; it only creates a local object.
             CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(systemFileName);
             await cloudBlockBlob.UploadFromByteArrayAsync(dataFiles, 0, dataFiles.Length);
 
-            return View();
+            return RedirectToAction(nameof(ShowAllBlobs));
         }
+        
         public async Task<IActionResult> Download(string blobName)
         {
             CloudBlockBlob blockBlob;
@@ -160,20 +164,6 @@ namespace CourseItr.Controllers
                 _context.Add(mathTask);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            string systemFileName = files.FileName;
-            string blobstorageconnection = _configuration.GetValue<string>("blobstorage");
-            // Retrieve storage account from connection string.
-            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(blobstorageconnection);
-            // Create the blob client.
-            CloudBlobClient blobClient = cloudStorageAccount.CreateCloudBlobClient();
-            // Retrieve a reference to a container.
-            CloudBlobContainer container = blobClient.GetContainerReference("couritr");
-            // This also does not make a service call; it only creates a local object.
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(systemFileName);
-            await using (var data = files.OpenReadStream())
-            {
-                await blockBlob.UploadFromStreamAsync(data);
             }
             ViewBag.Topics = new SelectList(_context.MathTopics, "Id", "Name", mathTask.Name);
             return View(mathTask);
