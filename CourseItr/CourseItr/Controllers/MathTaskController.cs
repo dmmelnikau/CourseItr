@@ -20,13 +20,10 @@ namespace CourseItr.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
-        private IWebHostEnvironment hostingEnv;
-        public MathTaskController(ApplicationDbContext context,IConfiguration configuration, IWebHostEnvironment env)
+        public MathTaskController(ApplicationDbContext context,IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
-            this.hostingEnv = env;
-
         }
 
         // GET: MathTask
