@@ -1,4 +1,5 @@
 using CourseItr.Data;
+using CourseItr.Models;
 using JavaScriptEngineSwitcher.ChakraCore;
 using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
 using Microsoft.AspNetCore.Builder;
@@ -37,7 +38,8 @@ namespace CourseItr
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
              .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddAuthentication().AddMicrosoftAccount(microsoftOptions =>
@@ -58,7 +60,9 @@ namespace CourseItr
                    });
          
             services.AddControllersWithViews();
+    
         }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -81,7 +85,6 @@ namespace CourseItr
             app.UseReact(config => { });
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

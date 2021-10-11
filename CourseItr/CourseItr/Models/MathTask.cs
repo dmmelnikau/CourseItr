@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace CourseItr.Models
         public string Name { get; set; }
         public int? MathTopicId { get; set; }
         public MathTopic MathTopic { get; set; }
+       
     }
     public class MathTopic
     {
