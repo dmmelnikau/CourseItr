@@ -19,7 +19,7 @@ namespace CourseItr.Controllers
             _roleManager = roleManager;
             _userManager = userManager;
         }
-        [Authorize(Roles = "Admin,User")
+        [Authorize(Roles = "Admin,User")]
         public IActionResult UserList() => View(_userManager.Users.ToList());
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string userId)
