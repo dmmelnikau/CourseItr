@@ -10,7 +10,7 @@ namespace CourseItr.Controllers
 {
     public class UsersController : Controller
     {
-         UserManager<User> _userManager;
+        readonly UserManager<User> _userManager;
  
         public UsersController(UserManager<User> userManager)
         {

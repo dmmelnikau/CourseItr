@@ -12,17 +12,17 @@ namespace CourseItr.Controllers
     
     public class RolesController : Controller
     {
-        RoleManager<IdentityRole> _roleManager;
-        UserManager<User> _userManager;
+        readonly RoleManager<IdentityRole> _roleManager;
+        readonly UserManager<User> _userManager;
         public RolesController(RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
         {
             _roleManager = roleManager;
             _userManager = userManager;
         }
-        //   [Authorize(Roles = "Admin,User")]
+         [Authorize(Roles = "Admin,User")]
      
         public IActionResult UserList() => View(_userManager.Users.ToList());
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string userId)
         {
             // получаем пользователя
