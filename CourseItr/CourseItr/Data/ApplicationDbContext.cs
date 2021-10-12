@@ -36,7 +36,7 @@ namespace CourseItr.Data
             );
             base.OnModelCreating(modelBuilder);
         }
-        public DbSet<MathTask> MathTasks { get; set; } 
         public DbSet<MathTopic> MathTopics { get; set; }
+        public DbSet<MTask> MTasks { get; set; }
     }
 }

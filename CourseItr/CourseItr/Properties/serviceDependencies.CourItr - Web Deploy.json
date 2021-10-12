@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "mssql1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/couritrdbserver/databases/CourItr_db",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/couritrdbserver/databases/CourseItr1_db",
       "type": "mssql.azure",
       "connectionId": "DefaultConnection",
       "secretStore": "AzureAppSettings"

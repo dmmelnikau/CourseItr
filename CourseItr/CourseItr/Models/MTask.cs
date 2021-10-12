@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CourseItr.Models
 {
-    public class MathTask
+    public class MTask
     {
         [Key]
         public int Id { get; set; }
@@ -15,7 +15,9 @@ namespace CourseItr.Models
         public string Name { get; set; }
         public int? MathTopicId { get; set; }
         public MathTopic MathTopic { get; set; }
-       
+        public string? UserId { get; set; }
+        public User User { get; set; }
+
     }
     public class MathTopic
     {

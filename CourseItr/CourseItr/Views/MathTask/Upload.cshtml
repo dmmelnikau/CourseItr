@@ -2,34 +2,4 @@
 @{
     ViewBag.Title = "Index";
 }
-<script src="~/dir/min/dropzone.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-<link href="~/dir/min/dropzone.min.css" rel="stylesheet" />
-<h2>Drag & Drop file upload </h2>
 
-<div class="row">
-    @using (Html.BeginForm("Upload", "MathTask",
-                   FormMethod.Post,
-                   new
-                   {
-                       @class = "dropzone",
-                       id = "dropzone-form",
-                   }))
-    {
-        <div class="fallback">
-            <input name="file" type="file" multiple  />
-        </div>
-    }
-    <a asp-action="ShowAllBlobs">Show</a>
-</div>
-@section Scripts{
-    <script type="text/javascript">
-        Dropzone.options.dropzoneForm = {
-            paramName: "file",
-            maxFilesize: 20,
-            maxFiles: 3,
-            acceptedFiles: "image/*",
-            dictMaxFilesExceeded: "Custom max files msg",
-        };
-    </script>
-}

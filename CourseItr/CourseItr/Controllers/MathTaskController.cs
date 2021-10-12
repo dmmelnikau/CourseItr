@@ -14,22 +14,28 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using System.IO;
 using System.Web;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+
 namespace CourseItr.Controllers
 {
+    
     public class MathTaskController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> userManager;
         private readonly IConfiguration _configuration;
-        public MathTaskController(ApplicationDbContext context,IConfiguration configuration)
+        public MathTaskController(ApplicationDbContext context,IConfiguration configuration, UserManager<User> _userManager)
         {
             _context = context;
             _configuration = configuration;
+            userManager = _userManager;
         }
 
         // GET: MathTask
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.MathTasks.Include(m => m.MathTopic);
+            var applicationDbContext = _context.MTasks.Include(m => m.MathTopic).Include(m => m.User);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -41,8 +47,8 @@ namespace CourseItr.Controllers
                 return NotFound();
             }
 
-            var mathTask = await _context.MathTasks
-                .Include(m => m.MathTopic)
+            var mathTask = await _context.MTasks
+                .Include(m => m.MathTopic).Include(m => m.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (mathTask == null)
             {
@@ -68,7 +74,7 @@ namespace CourseItr.Controllers
             // Create the blob client.
             CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
             // Retrieve a reference to a container.
-            CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference("couritr");
+            CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference("citrans");
 
             BlobContainerPermissions permissions = new BlobContainerPermissions
             {
@@ -96,7 +102,7 @@ namespace CourseItr.Controllers
                 string blobstorageconnection = _configuration.GetValue<string>("blobstorage");
                 CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(blobstorageconnection);
                 CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-                CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference("couritr");
+                CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference("citrans");
                 blockBlob = cloudBlobContainer.GetBlockBlobReference(blobName);
                 await blockBlob.DownloadToStreamAsync(memoryStream);
             }
@@ -109,11 +115,11 @@ namespace CourseItr.Controllers
             string blobstorageconnection = _configuration.GetValue<string>("blobstorage");
             CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(blobstorageconnection);
             CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-            string strContainerName = "couritr";
+            string strContainerName = "citrans";
             CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference(strContainerName);
             var blob = cloudBlobContainer.GetBlobReference(blobName);
             await blob.DeleteIfExistsAsync();
-            return RedirectToAction("ShowAllBlobs", "MathTask");
+            return RedirectToAction("ShowAllBlobs", "MTask");
         }
         public async Task<IActionResult> ShowAllBlobs()
         {
@@ -121,8 +127,8 @@ namespace CourseItr.Controllers
             CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(blobstorageconnection);
             // Create the blob client.
             CloudBlobClient blobClient = cloudStorageAccount.CreateCloudBlobClient();
-            CloudBlobContainer container = blobClient.GetContainerReference("couritr");
-            CloudBlobDirectory dirb = container.GetDirectoryReference("couritr");
+            CloudBlobContainer container = blobClient.GetContainerReference("citrans");
+            CloudBlobDirectory dirb = container.GetDirectoryReference("citrans");
 
 
             BlobResultSegment resultSegment = await container.ListBlobsSegmentedAsync(string.Empty,
@@ -146,6 +152,7 @@ namespace CourseItr.Controllers
         public IActionResult Create()
         {
            ViewBag.Topics = new SelectList(_context.MathTopics, "Id", "Name");
+            ViewBag.Users = new SelectList(_context.Users, "Id", "UserName");
             return View();
         }
 
@@ -154,7 +161,7 @@ namespace CourseItr.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Condition,MathTopicId")] MathTask mathTask, IFormFile files)
+        public async Task<IActionResult> Create([Bind("Id,Name,Condition,MathTopicId,UserId")] MTask mathTask, IFormFile files)
         {
             if (ModelState.IsValid)
             {
@@ -163,6 +170,7 @@ namespace CourseItr.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.Topics = new SelectList(_context.MathTopics, "Id", "Name", mathTask.Name);
+            ViewBag.Users = new SelectList(_context.Users, "Id", "UserName", mathTask.Name);
             return View(mathTask);
         }
 
@@ -174,12 +182,14 @@ namespace CourseItr.Controllers
                 return NotFound();
             }
 
-            var mathTask = await _context.MathTasks.FindAsync(id);
+            var mathTask = await _context.MTasks.FindAsync(id);
             if (mathTask == null)
             {
                 return NotFound();
             }
             ViewBag.Topics = new SelectList(_context.MathTopics, "Id", "Name", mathTask.Name);
+            ViewBag.Users = new SelectList(_context.Users, "Id", "UserName", mathTask.Name);
+
             return View(mathTask);
         }
 
@@ -188,7 +198,7 @@ namespace CourseItr.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Condition,MathTopicId")] MathTask mathTask)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Condition,MathTopicId,UserId")] MTask mathTask)
         {
             if (id != mathTask.Id)
             {
@@ -216,6 +226,7 @@ namespace CourseItr.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.Topics = new SelectList(_context.MathTopics, "Id", "Name", mathTask.Name);
+                ViewBag.Users = new SelectList(_context.Users, "Id", "UserName", mathTask.Name);
             return View(mathTask);
         }
 
@@ -227,8 +238,8 @@ namespace CourseItr.Controllers
                 return NotFound();
             }
 
-            var mathTask = await _context.MathTasks
-                .Include(m => m.MathTopic)
+            var mathTask = await _context.MTasks
+                .Include(m => m.MathTopic).Include(m =>m.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (mathTask == null)
             {
@@ -243,15 +254,15 @@ namespace CourseItr.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var mathTask = await _context.MathTasks.FindAsync(id);
-            _context.MathTasks.Remove(mathTask);
+            var mathTask = await _context.MTasks.FindAsync(id);
+            _context.MTasks.Remove(mathTask);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool MathTaskExists(int id)
         {
-            return _context.MathTasks.Any(e => e.Id == id);
+            return _context.MTasks.Any(e => e.Id == id);
         }
   
     }
