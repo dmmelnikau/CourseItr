@@ -38,5 +38,6 @@ namespace CourseItr.Data
         }
         public DbSet<MathTopic> MathTopics { get; set; }
         public DbSet<MTask> MTasks { get; set; }
+        public DbSet<RatingViewModel> RatingViewModels { get; set; } 
     }
 }
