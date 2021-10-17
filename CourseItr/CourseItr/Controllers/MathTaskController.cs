@@ -38,7 +38,11 @@ namespace CourseItr.Controllers
             var applicationDbContext = _context.MTasks.Include(m => m.MathTopic).Include(m => m.User);
             return View(await applicationDbContext.ToListAsync());
         }
-
+        public async Task<IActionResult> CheckAnswers()
+        {
+            var applicationDbContext = _context.MTasks.Include(m => m.MathTopic).Include(m => m.User);
+            return View(await applicationDbContext.ToListAsync());
+        }
         // GET: MathTask/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -161,7 +165,7 @@ namespace CourseItr.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Condition,MathTopicId,UserId")] MTask mathTask, IFormFile files)
+        public async Task<IActionResult> Create([Bind("Id,Name,Condition,MathTopicId,Option1,Option2,Option3,Correctians,UserId")] MTask mathTask, IFormFile files)
         {
             if (ModelState.IsValid)
             {
@@ -198,7 +202,7 @@ namespace CourseItr.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Condition,MathTopicId,UserId")] MTask mathTask)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Condition,MathTopicId,Option1,Option2,Option3,Correctians,UserId")] MTask mathTask)
         {
             if (id != mathTask.Id)
             {

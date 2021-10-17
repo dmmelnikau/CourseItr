@@ -1,0 +1,63 @@
+﻿@model IEnumerable<CourseItr.Models.MTask>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+ <a asp-action="Index">Go Back</a> 
+</p>
+<table class="table">
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name) 
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Condition)
+                </td>
+                <td>
+                    <input type="radio" id="option1" name="@Html.DisplayFor(modelItem => item.Id) " class="rb" value=@Html.DisplayFor(modelItem => item.Option1) />
+                    @Html.DisplayFor(modelItem => item.Option1)
+                    <input type="radio" id="option2" name="@Html.DisplayFor(modelItem => item.Id) " class="rb" value=@Html.DisplayFor(modelItem => item.Option2) />
+                    @Html.DisplayFor(modelItem => item.Option2)
+                    <input type="radio" id="option3" name="@Html.DisplayFor(modelItem => item.Id) " class="rb" value=@Html.DisplayFor(modelItem => item.Option3) />
+                    @Html.DisplayFor(modelItem => item.Option3)
+                </td>
+                </tr>
+             <tr>
+                <td>
+                    <label id="correctians" name="@Html.DisplayFor(modelItem => item.Id)" class="rb" style="display:none; color:forestgreen;"><b>@Html.DisplayFor(modelItem => item.Correctians)</b></label>
+                </td>
+                
+            </tr>
+        }
+    </tbody>
+</table>
+<button type="button" id="butexam" class="btn-success">Submit</button>
+<br/>
+<label id="Usranswers"></label>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#butexam').click(function () {
+            $(".rb").show();
+            $(".rb").attr("disabled", true);
+        });
+    });
+    function displayresult() {
+        document.getElementById("Usranswers").innerHTML = "";
+        var results = document.getElementsByTagName('input');
+        for (i = 0; i < results.length; i++) {
+            if (results[i].type == "radio") {
+                if (results[i].checked) {
+                    document.getElementById("Usranswers").innerHTML += "Q " + results[i].name + " )" + "The selected answer is " + results[i].value + "<br/>";
+                }
+            }
+        }
+    }
+</script>

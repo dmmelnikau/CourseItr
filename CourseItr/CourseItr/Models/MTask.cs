@@ -15,6 +15,10 @@ namespace CourseItr.Models
         public string Name { get; set; }
         public int? MathTopicId { get; set; }
         public MathTopic MathTopic { get; set; }
+        public string Option1 { get; set; }
+        public string Option2 { get; set; }
+        public string Option3 { get; set; }
+        public string Correctians { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
 
