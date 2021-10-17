@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CourseItr.Migrations
 {
@@ -7,7 +6,7 @@ namespace CourseItr.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-           
+
             migrationBuilder.CreateTable(
                 name: "RatingModels",
                 columns: table => new
@@ -28,7 +27,7 @@ namespace CourseItr.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            
+
             migrationBuilder.CreateTable(
                 name: "MTaskRatingModel",
                 columns: table => new
@@ -53,7 +52,7 @@ namespace CourseItr.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            
+
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -63,7 +62,7 @@ namespace CourseItr.Migrations
             migrationBuilder.DropTable(
                 name: "MTaskRatingModel");
 
-      
+
 
             migrationBuilder.DropTable(
                 name: "RatingModels");

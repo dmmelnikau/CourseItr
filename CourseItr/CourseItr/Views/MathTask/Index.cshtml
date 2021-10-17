@@ -34,7 +34,7 @@
                 @Html.DisplayNameFor(model => model.Correctians)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User.Email)
+                @Html.DisplayNameFor(model => model.User)
             </th>
             <th></th>
         </tr>
@@ -64,7 +64,7 @@
                 @Html.DisplayFor(modelItem => item.Correctians)
             </td>
             <th>
-                @Html.DisplayNameFor(modelItem => item.UserId)
+                @Html.DisplayFor(modelItem => item.User.Email)
             </th>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

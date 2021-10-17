@@ -1,10 +1,6 @@
 ﻿using CourseItr.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CourseItr.Data
 {
@@ -14,14 +10,15 @@ namespace CourseItr.Data
             : base(options)
         {
         }
-       
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+
             modelBuilder.Entity<MathTopic>().HasData(
                 new MathTopic
                 {
-                     Id = 1, Name = "Геометрия"
+                    Id = 1,
+                    Name = "Геометрия"
                 },
                 new MathTopic
                 {
@@ -38,6 +35,7 @@ namespace CourseItr.Data
         }
         public DbSet<MathTopic> MathTopics { get; set; }
         public DbSet<MTask> MTasks { get; set; }
-      public DbSet<RatingModel>  RatingModels { get; set; }
+        public DbSet<RatingModel> RatingModels { get; set; }
+        public DbSet<CourseItr.Models.RatingTask> RatingTask { get; set; }
     }
 }

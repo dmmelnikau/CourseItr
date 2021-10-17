@@ -4,14 +4,16 @@ using CourseItr.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CourseItr.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211017175443_Ratinngdaatajk")]
+    partial class Ratinngdaatajk
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,28 +113,6 @@ namespace CourseItr.Migrations
                     b.ToTable("RatingModels");
                 });
 
-            modelBuilder.Entity("CourseItr.Models.RatingTask", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("MTaskId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RatingModelId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MTaskId");
-
-                    b.HasIndex("RatingModelId");
-
-                    b.ToTable("RatingTask");
-                });
-
             modelBuilder.Entity("CourseItr.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -182,6 +162,11 @@ namespace CourseItr.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("VanityUrl")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -372,25 +357,6 @@ namespace CourseItr.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CourseItr.Models.RatingTask", b =>
-                {
-                    b.HasOne("CourseItr.Models.MTask", "MTask")
-                        .WithMany("RatingTasks")
-                        .HasForeignKey("MTaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CourseItr.Models.RatingModel", "RatingModel")
-                        .WithMany("RatingTasks")
-                        .HasForeignKey("RatingModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MTask");
-
-                    b.Navigation("RatingModel");
-                });
-
             modelBuilder.Entity("MTaskRatingModel", b =>
                 {
                     b.HasOne("CourseItr.Models.MTask", null)
@@ -455,16 +421,6 @@ namespace CourseItr.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("CourseItr.Models.MTask", b =>
-                {
-                    b.Navigation("RatingTasks");
-                });
-
-            modelBuilder.Entity("CourseItr.Models.RatingModel", b =>
-                {
-                    b.Navigation("RatingTasks");
                 });
 #pragma warning restore 612, 618
         }

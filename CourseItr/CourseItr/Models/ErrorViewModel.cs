@@ -1,5 +1,3 @@
-using System;
-
 namespace CourseItr.Models
 {
     public class ErrorViewModel

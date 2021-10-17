@@ -31,7 +31,7 @@
                 </tr>
              <tr>
                 <td>
-                    <label id="correctians" name="@Html.DisplayFor(modelItem => item.Id)" class="rb" style="display:none; color:forestgreen;"><b>@Html.DisplayFor(modelItem => item.Correctians)</b></label>
+                    <label id="correctians" name="@Html.DisplayFor(modelItem => item.Id)"  class="rb" style="display:none; color:forestgreen;"><b>@Html.DisplayFor(modelItem => item.Correctians)</b></label>
                 </td>
                 
             </tr>
@@ -52,10 +52,17 @@
     function displayresult() {
         document.getElementById("Usranswers").innerHTML = "";
         var results = document.getElementsByTagName('input');
+        var right = document.getElementById('correctians');
         for (i = 0; i < results.length; i++) {
             if (results[i].type == "radio") {
                 if (results[i].checked) {
                     document.getElementById("Usranswers").innerHTML += "Q " + results[i].name + " )" + "The selected answer is " + results[i].value + "<br/>";
+                }
+                if (results[i].value === right) {
+                    alert("Верное решение");
+                }
+                else {
+                    alert("Неверное решение")
                 }
             }
         }

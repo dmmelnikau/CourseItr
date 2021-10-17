@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CourseItr.Models.RatingModel>
+﻿@model IEnumerable<CourseItr.Models.RatingTask>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,11 +13,12 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Rating)
+                @Html.DisplayNameFor(model => model.MTask)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User)
+                @Html.DisplayNameFor(model => model.RatingModel)
             </th>
+            
             <th></th>
         </tr>
     </thead>
@@ -25,10 +26,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Rating)
+                @Html.DisplayFor(modelItem => item.MTask.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.User.Email)
+                @Html.DisplayFor(modelItem => item.RatingModel.Rating)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CourseItr.Models
 {
@@ -20,8 +16,10 @@ namespace CourseItr.Models
         public string Option3 { get; set; }
         public string Correctians { get; set; }
         public List<RatingModel> RatingModels { get; set; } = new List<RatingModel>();
+        public List<RatingTask> RatingTasks { get; set; } = new List<RatingTask>();
         public string UserId { get; set; }
         public User User { get; set; }
+
 
     }
     public class MathTopic
@@ -36,5 +34,5 @@ namespace CourseItr.Models
         public string FileSize { get; set; }
         public string ModifiedOn { get; set; }
     }
-   
+
 }

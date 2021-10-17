@@ -2,14 +2,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace CourseItr.Controllers
 {
-    
+
     public class RolesController : Controller
     {
         readonly RoleManager<IdentityRole> _roleManager;
@@ -19,8 +18,8 @@ namespace CourseItr.Controllers
             _roleManager = roleManager;
             _userManager = userManager;
         }
-         [Authorize(Roles = "Admin,User")]
-     
+        [Authorize(Roles = "Admin,User")]
+
         public IActionResult UserList() => View(_userManager.Users.ToList());
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string userId)

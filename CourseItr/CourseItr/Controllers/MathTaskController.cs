@@ -1,31 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CourseItr.Data;
+using CourseItr.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using CourseItr.Data;
-using CourseItr.Models;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Http;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Web;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CourseItr.Controllers
 {
-    
+
     public class MathTaskController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> userManager;
         private readonly IConfiguration _configuration;
-        public MathTaskController(ApplicationDbContext context,IConfiguration configuration, UserManager<User> _userManager)
+        public MathTaskController(ApplicationDbContext context, IConfiguration configuration, UserManager<User> _userManager)
         {
             _context = context;
             _configuration = configuration;
@@ -35,7 +32,7 @@ namespace CourseItr.Controllers
         // GET: MathTask
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.MTasks.Include(m => m.MathTopic).Include(m => m.User);
+            var applicationDbContext = _context.MTasks.Include(m => m.MathTopic).Include(m => m.User).Where(a => a.User.UserName == User.Identity.Name); 
             return View(await applicationDbContext.ToListAsync());
         }
         public async Task<IActionResult> CheckAnswers()
@@ -66,11 +63,11 @@ namespace CourseItr.Controllers
         {
             return View();
         }
-       
+
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            
+
             string blobstorageconnection = _configuration.GetValue<string>("blobstorage");
             byte[] dataFiles;
             // Retrieve storage account from connection string.
@@ -97,7 +94,7 @@ namespace CourseItr.Controllers
 
             return RedirectToAction(nameof(ShowAllBlobs));
         }
-        
+
         public async Task<IActionResult> Download(string blobName)
         {
             CloudBlockBlob blockBlob;
@@ -155,8 +152,7 @@ namespace CourseItr.Controllers
         // GET: MathTask/Create
         public IActionResult Create()
         {
-           ViewBag.Topics = new SelectList(_context.MathTopics, "Id", "Name");
-            ViewBag.Users = new SelectList(_context.Users, "Id", "Email");
+            ViewBag.Topics = new SelectList(_context.MathTopics, "Id", "Name");
             return View();
         }
 
@@ -167,6 +163,8 @@ namespace CourseItr.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Condition,MathTopicId,Option1,Option2,Option3,Correctians,UserId")] MTask mathTask, IFormFile files)
         {
+            var user = userManager.FindByNameAsync(User.Identity.Name).Result;
+            mathTask.UserId = user.Id;
             if (ModelState.IsValid)
             {
                 _context.Add(mathTask);
@@ -174,7 +172,7 @@ namespace CourseItr.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.Topics = new SelectList(_context.MathTopics, "Id", "Name", mathTask.Name);
-            ViewBag.Users = new SelectList(_context.Users, "Id", "Email", mathTask.Name);
+          
             return View(mathTask);
         }
 
@@ -192,7 +190,7 @@ namespace CourseItr.Controllers
                 return NotFound();
             }
             ViewBag.Topics = new SelectList(_context.MathTopics, "Id", "Name", mathTask.Name);
-            ViewBag.Users = new SelectList(_context.Users, "Id", "Email", mathTask.Name);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", mathTask.UserId);
 
             return View(mathTask);
         }
@@ -230,7 +228,7 @@ namespace CourseItr.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.Topics = new SelectList(_context.MathTopics, "Id", "Name", mathTask.Name);
-                ViewBag.Users = new SelectList(_context.Users, "Id", "Email", mathTask.Name);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", mathTask.UserId);
             return View(mathTask);
         }
 
@@ -243,7 +241,7 @@ namespace CourseItr.Controllers
             }
 
             var mathTask = await _context.MTasks
-                .Include(m => m.MathTopic).Include(m =>m.User)
+                .Include(m => m.MathTopic).Include(m => m.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (mathTask == null)
             {
@@ -268,6 +266,6 @@ namespace CourseItr.Controllers
         {
             return _context.MTasks.Any(e => e.Id == id);
         }
-  
+
     }
 }
