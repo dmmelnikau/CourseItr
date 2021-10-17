@@ -19,6 +19,7 @@ namespace CourseItr.Models
         public string Option2 { get; set; }
         public string Option3 { get; set; }
         public string Correctians { get; set; }
+        public List<RatingModel> RatingModels { get; set; } = new List<RatingModel>();
         public string UserId { get; set; }
         public User User { get; set; }
 

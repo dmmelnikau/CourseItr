@@ -156,7 +156,7 @@ namespace CourseItr.Controllers
         public IActionResult Create()
         {
            ViewBag.Topics = new SelectList(_context.MathTopics, "Id", "Name");
-            ViewBag.Users = new SelectList(_context.Users, "Id", "UserName");
+            ViewBag.Users = new SelectList(_context.Users, "Id", "Email");
             return View();
         }
 
@@ -174,7 +174,7 @@ namespace CourseItr.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.Topics = new SelectList(_context.MathTopics, "Id", "Name", mathTask.Name);
-            ViewBag.Users = new SelectList(_context.Users, "Id", "UserName", mathTask.Name);
+            ViewBag.Users = new SelectList(_context.Users, "Id", "Email", mathTask.Name);
             return View(mathTask);
         }
 
@@ -192,7 +192,7 @@ namespace CourseItr.Controllers
                 return NotFound();
             }
             ViewBag.Topics = new SelectList(_context.MathTopics, "Id", "Name", mathTask.Name);
-            ViewBag.Users = new SelectList(_context.Users, "Id", "UserName", mathTask.Name);
+            ViewBag.Users = new SelectList(_context.Users, "Id", "Email", mathTask.Name);
 
             return View(mathTask);
         }
@@ -230,7 +230,7 @@ namespace CourseItr.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.Topics = new SelectList(_context.MathTopics, "Id", "Name", mathTask.Name);
-                ViewBag.Users = new SelectList(_context.Users, "Id", "UserName", mathTask.Name);
+                ViewBag.Users = new SelectList(_context.Users, "Id", "Email", mathTask.Name);
             return View(mathTask);
         }
 

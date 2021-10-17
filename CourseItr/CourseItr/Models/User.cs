@@ -8,5 +8,6 @@ namespace CourseItr.Models
 {
     public class User: IdentityUser
     {
+      
     }
 }

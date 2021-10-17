@@ -82,20 +82,22 @@ body {
         display: inline-block;
     }
 
-.rating span.star:hover, .rating span.star:hover {
+        .rating span.star:hover, .rating span.star:hover {
             cursor: pointer;
         }
 
-.rating span.star:before, .rating span.star:before {
-            content: "★";
+        .rating span.star:before, .rating span.star:before {
+            content: "?";
             padding-right: 5px;
             color: #BEC3C7;
         }
-.rating span.star:hover:before, .rating span.star:hover:before, .rating span.star:hover ~ span.star:before, .rating span.star:hover ~ span.star:before {
-            content: "★";
+
+        .rating span.star:hover:before, .rating span.star:hover:before, .rating span.star:hover ~ span.star:before, .rating span.star:hover ~ span.star:before {
+            content: "?";
             color: #41CAC0;
         }
- .rating span.star.active::before, .rating span.star.active::before, .rating span.star.active ~ span.star::before, .rating span.star.active ~ span.star::before {
+
+        .rating span.star.active::before, .rating span.star.active::before, .rating span.star.active ~ span.star::before, .rating span.star.active ~ span.star::before {
             color: #41cac0;
-            content: "★";
+            content: "?";
         }

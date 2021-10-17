@@ -10,15 +10,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourseItr.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211017085029_options")]
-    partial class options
+    [Migration("20211017142153_Ratin")]
+    partial class Ratin
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.10")
+                .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("CourseItr.Models.MTask", b =>
@@ -93,19 +93,24 @@ namespace CourseItr.Migrations
                         });
                 });
 
-            modelBuilder.Entity("CourseItr.Models.RatingViewModel", b =>
+            modelBuilder.Entity("CourseItr.Models.RatingModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Rating")
+                    b.Property<int>("RatingNumber")
                         .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("RatingViewModels");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RatingModels");
                 });
 
             modelBuilder.Entity("CourseItr.Models.User", b =>
@@ -171,6 +176,21 @@ namespace CourseItr.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("MTaskRatingModel", b =>
+                {
+                    b.Property<int>("MTasksId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RatingModelsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MTasksId", "RatingModelsId");
+
+                    b.HasIndex("RatingModelsId");
+
+                    b.ToTable("MTaskRatingModel");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -321,6 +341,30 @@ namespace CourseItr.Migrations
                     b.Navigation("MathTopic");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CourseItr.Models.RatingModel", b =>
+                {
+                    b.HasOne("CourseItr.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MTaskRatingModel", b =>
+                {
+                    b.HasOne("CourseItr.Models.MTask", null)
+                        .WithMany()
+                        .HasForeignKey("MTasksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CourseItr.Models.RatingModel", null)
+                        .WithMany()
+                        .HasForeignKey("RatingModelsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

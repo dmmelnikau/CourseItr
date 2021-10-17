@@ -19,13 +19,14 @@ namespace CourseItr.Controllers
             _context = context;
         }
 
-        // GET: RatingViewModel
+        // GET: Rating
         public async Task<IActionResult> Index()
         {
-            return View(await _context.RatingViewModels.ToListAsync());
+            var applicationDbContext = _context.RatingModels.Include(r => r.User).Include(r => r.MTasks);
+            return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: RatingViewModel/Details/5
+        // GET: Rating/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,41 +34,45 @@ namespace CourseItr.Controllers
                 return NotFound();
             }
 
-            var ratingViewModel = await _context.RatingViewModels
+            var ratingModel = await _context.RatingModels
+                .Include(r => r.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (ratingViewModel == null)
+            if (ratingModel == null)
             {
                 return NotFound();
             }
 
-            return View(ratingViewModel);
+            return View(ratingModel);
         }
 
-        // GET: RatingViewModel/Create
-        [HttpGet]
+        // GET: Rating/Create
         public IActionResult Create()
         {
-            RatingViewModel ratingViewModel = new RatingViewModel();
-            return View(ratingViewModel);
+            RatingModel model = new RatingModel();
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+          
+            return View(model);
         }
 
-        // POST: RatingViewModel/Create
+        // POST: Rating/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Rating")] RatingViewModel ratingViewModel)
+        public async Task<IActionResult> Create([Bind("Id,Rating,UserId")] RatingModel ratingModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(ratingViewModel);
+                _context.Add(ratingModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(ratingViewModel);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ratingModel.UserId);
+  
+            return View(ratingModel);
         }
 
-        // GET: RatingViewModel/Edit/5
+        // GET: Rating/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -75,22 +80,23 @@ namespace CourseItr.Controllers
                 return NotFound();
             }
 
-            var ratingViewModel = await _context.RatingViewModels.FindAsync(id);
-            if (ratingViewModel == null)
+            var ratingModel = await _context.RatingModels.FindAsync(id);
+            if (ratingModel == null)
             {
                 return NotFound();
             }
-            return View(ratingViewModel);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ratingModel.UserId);
+            return View(ratingModel);
         }
 
-        // POST: RatingViewModel/Edit/5
+        // POST: Rating/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Rating")] RatingViewModel ratingViewModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Rating,UserId")] RatingModel ratingModel)
         {
-            if (id != ratingViewModel.Id)
+            if (id != ratingModel.Id)
             {
                 return NotFound();
             }
@@ -99,12 +105,12 @@ namespace CourseItr.Controllers
             {
                 try
                 {
-                    _context.Update(ratingViewModel);
+                    _context.Update(ratingModel);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RatingViewModelExists(ratingViewModel.Id))
+                    if (!RatingModelExists(ratingModel.Id))
                     {
                         return NotFound();
                     }
@@ -115,10 +121,11 @@ namespace CourseItr.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(ratingViewModel);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ratingModel.UserId);
+            return View(ratingModel);
         }
 
-        // GET: RatingViewModel/Delete/5
+        // GET: Rating/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,30 +133,31 @@ namespace CourseItr.Controllers
                 return NotFound();
             }
 
-            var ratingViewModel = await _context.RatingViewModels
+            var ratingModel = await _context.RatingModels
+                .Include(r => r.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (ratingViewModel == null)
+            if (ratingModel == null)
             {
                 return NotFound();
             }
 
-            return View(ratingViewModel);
+            return View(ratingModel);
         }
 
-        // POST: RatingViewModel/Delete/5
+        // POST: Rating/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ratingViewModel = await _context.RatingViewModels.FindAsync(id);
-            _context.RatingViewModels.Remove(ratingViewModel);
+            var ratingModel = await _context.RatingModels.FindAsync(id);
+            _context.RatingModels.Remove(ratingModel);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RatingViewModelExists(int id)
+        private bool RatingModelExists(int id)
         {
-            return _context.RatingViewModels.Any(e => e.Id == id);
+            return _context.RatingModels.Any(e => e.Id == id);
         }
     }
 }
