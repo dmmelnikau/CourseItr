@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Korzh.EasyQuery.Linq;
 
 namespace CourseItr.Controllers
 {
@@ -26,12 +27,13 @@ namespace CourseItr.Controllers
             _logger = logger;
             _context = context;
         }
-
         public async Task<IActionResult> Index()
         {
+
             var applicationDbContext = _context.MTasks.Include(m => m.MathTopic).Include(m => m.User);
             return View(await applicationDbContext.ToListAsync());
         }
+
 
     }
 }

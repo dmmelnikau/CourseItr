@@ -9,17 +9,29 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<form method="get">
+    <div class="form-inline form-group">
+        <label class="control-label">Name: </label>
+        <input name="name" class="form-control" />
+
+        <label class="control-label">Topic: </label>
+        <select name="topic" asp-items="ViewBag.Topics" class="form-control"></select>
+
+        <input type="submit" value="Filter" class="btn btn-default" />
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+            <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">Name</a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.MathTopic)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Condition)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CondSortParm"]">Condition</a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Option1)
@@ -40,39 +52,40 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MathTopic.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Condition)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Option1)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Option2)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Option3)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Correctians)
-            </td>
-            <th>
-                @Html.DisplayFor(modelItem => item.User.Email)
-            </th>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="CheckAnswers" asp-route-id="@item.Id">Go To Asnwer</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-              
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MathTopic.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Condition)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Option1)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Option2)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Option3)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Correctians)
+                </td>
+                <th>
+                    @Html.DisplayFor(modelItem => item.User.Email)
+                </th>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="CheckAnswers" asp-route-id="@item.Id">Go To Asnwer</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

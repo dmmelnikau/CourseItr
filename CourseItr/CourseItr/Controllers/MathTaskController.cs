@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
 
 namespace CourseItr.Controllers
@@ -30,10 +31,55 @@ namespace CourseItr.Controllers
         }
 
         // GET: MathTask
-        public async Task<IActionResult> Index()
+       /* public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.MTasks.Include(m => m.MathTopic).Include(m => m.User).Where(a => a.User.UserName == User.Identity.Name); 
             return View(await applicationDbContext.ToListAsync());
+        }
+       */
+        public async Task<ActionResult> Index(int? topic, string name, string sortOrder)
+        {
+            IQueryable<MTask> mTasks = _context.MTasks.Include(m => m.MathTopic).Include(m => m.User).Where(a => a.User.UserName == User.Identity.Name);
+            if (topic != null && topic != 0)
+            {
+                mTasks = mTasks.Where(p => p.MathTopicId == topic);
+            }
+            if (!String.IsNullOrEmpty(name))
+            {
+                mTasks = mTasks.Where(p => p.Name.Contains(name));
+            }
+
+            List<MathTopic> mathTopics = _context.MathTopics.ToList();
+            mathTopics.Insert(0, new MathTopic { Name = "Все", Id = 0 });
+
+            FilterListViewModel viewModel = new FilterListViewModel
+            {
+                MTasks = mTasks.ToList(),
+                MathTopics = new SelectList(mathTopics, "Id", "Name"),
+                Name = name
+            };
+            ViewBag.Topics = viewModel.MathTopics;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "name_order";
+           
+            ViewData["CondSortParm"] = String.IsNullOrEmpty(sortOrder) ? "cond_desc" : "";
+
+           // var sort = from s in _context.MTasks select s;
+            switch (sortOrder)
+            {
+                case "cond_desc":
+                    mTasks = mTasks.OrderByDescending(s => s.Condition);
+                    break;
+                case "name_desc":
+                    mTasks = mTasks.OrderByDescending(s => s.Name);
+                    break;
+                case "name_order":
+                    mTasks = mTasks.OrderBy(s => s.Name);
+                    break;
+                default:
+                    mTasks = mTasks.OrderBy(s => s.Condition);
+                    break;
+            }
+            return View(await mTasks.AsNoTracking().ToListAsync());
         }
         public async Task<IActionResult> CheckAnswers()
         {
