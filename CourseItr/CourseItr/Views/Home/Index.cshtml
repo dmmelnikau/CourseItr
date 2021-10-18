@@ -4,6 +4,14 @@
     ViewData["Title"] = "Index";
 }
 
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+        </p>
+    </div>
+</form>
 <h1>Index</h1>
 <a class="btn btn-primary" asp-area="" asp-controller="MathTask" asp-action="ShowAllBlobs">Show Condition Photo</a>
 <table class="table">

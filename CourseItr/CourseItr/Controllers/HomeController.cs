@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Korzh.EasyQuery.Linq;
+using System.Linq;
 
 namespace CourseItr.Controllers
 {
@@ -27,10 +28,14 @@ namespace CourseItr.Controllers
             _logger = logger;
             _context = context;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-
-            var applicationDbContext = _context.MTasks.Include(m => m.MathTopic).Include(m => m.User);
+            ViewData["CurrentFilter"] = searchString;
+            var applicationDbContext = from s in _context.MTasks.Include(m => m.MathTopic).Include(m => m.User) select s;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                applicationDbContext = applicationDbContext.Where(s => s.Name.Contains(searchString));
+            }
             return View(await applicationDbContext.ToListAsync());
         }
         public async Task<IActionResult> CheckAnswers()

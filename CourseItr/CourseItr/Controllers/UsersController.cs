@@ -1,7 +1,9 @@
-﻿using CourseItr.Models;
+﻿using CourseItr.Data;
+using CourseItr.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,13 +13,24 @@ namespace CourseItr.Controllers
     public class UsersController : Controller
     {
         readonly UserManager<User> _userManager;
+        private readonly ApplicationDbContext _context;
 
-        public UsersController(UserManager<User> userManager)
+        public UsersController(UserManager<User> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
+            _context = context;
         }
 
-        public IActionResult Index() => View(_userManager.Users.ToList());
+        public IActionResult Index(string searchString) {
+            ViewData["CurrentFilter"] = searchString;
+            var apliccationDb = from s in _context.Users
+                                                  select s;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                apliccationDb = apliccationDb.Where(s => s.UserName.Contains(searchString));
+            }
+            return View(apliccationDb.ToList());
+        }
 
 
         [HttpPost]
