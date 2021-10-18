@@ -8,7 +8,6 @@ namespace CourseItr.Models
     }
     public enum Roles
     {
-        Admin,
-        User
+        Admin
     }
 }

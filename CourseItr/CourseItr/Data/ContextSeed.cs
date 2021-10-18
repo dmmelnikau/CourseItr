@@ -10,7 +10,7 @@ namespace CourseItr.Data
         {
 
             await roleManager.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Roles.User.ToString()));
+            
 
         }
     }

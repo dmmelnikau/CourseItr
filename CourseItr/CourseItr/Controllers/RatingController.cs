@@ -1,5 +1,6 @@
 ﻿using CourseItr.Data;
 using CourseItr.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,16 +12,18 @@ namespace CourseItr.Controllers
     public class RatingController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> userManager;
 
-        public RatingController(ApplicationDbContext context)
+        public RatingController(ApplicationDbContext context, UserManager<User> usermanager)
         {
             _context = context;
+            userManager = usermanager;
         }
 
         // GET: Rating
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.RatingModels.Include(r => r.User);
+            var applicationDbContext = _context.RatingModels.Include(m => m.User).Where(a => a.User.UserName == User.Identity.Name);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -47,7 +50,6 @@ namespace CourseItr.Controllers
         public IActionResult Create()
         {
             RatingModel model = new RatingModel();
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
 
             return View(model);
         }
@@ -59,13 +61,15 @@ namespace CourseItr.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Rating,UserId")] RatingModel ratingModel)
         {
+            var user = userManager.FindByNameAsync(User.Identity.Name).Result;
+            ratingModel.UserId = user.Id;
             if (ModelState.IsValid)
             {
                 _context.Add(ratingModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", ratingModel.UserId);
+         
 
             return View(ratingModel);
         }
