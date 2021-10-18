@@ -33,6 +33,11 @@ namespace CourseItr.Controllers
             var applicationDbContext = _context.MTasks.Include(m => m.MathTopic).Include(m => m.User);
             return View(await applicationDbContext.ToListAsync());
         }
+        public async Task<IActionResult> CheckAnswers()
+        {
+            var applicationDbContext = _context.MTasks.Include(m => m.MathTopic).Include(m => m.User);
+            return View(await applicationDbContext.ToListAsync());
+        }
 
 
     }

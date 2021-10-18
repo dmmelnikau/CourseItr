@@ -1,5 +1,6 @@
 ﻿using CourseItr.Data;
 using CourseItr.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace CourseItr.Controllers
 {
+    [Authorize]
     public class RatingController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -87,7 +89,7 @@ namespace CourseItr.Controllers
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", ratingModel.UserId);
+           
             return View(ratingModel);
         }
 
@@ -102,7 +104,8 @@ namespace CourseItr.Controllers
             {
                 return NotFound();
             }
-
+            var user = userManager.FindByNameAsync(User.Identity.Name).Result;
+            ratingModel.UserId = user.Id;
             if (ModelState.IsValid)
             {
                 try
@@ -123,7 +126,7 @@ namespace CourseItr.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", ratingModel.UserId);
+            
             return View(ratingModel);
         }
 

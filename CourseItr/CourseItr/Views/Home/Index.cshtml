@@ -5,6 +5,7 @@
 }
 
 <h1>Index</h1>
+<a class="btn btn-primary" asp-area="" asp-controller="MathTask" asp-action="ShowAllBlobs">Show Condition Photo</a>
 <table class="table">
     <thead>
         <tr>
@@ -39,7 +40,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.User.Email)
                 </td>
-      
+                <td>
+                    <a asp-action="CheckAnswers" class="btn btn-primary" asp-route-id="@item.Id">Go To Asnwer</a>
+                </td>
             </tr>
         }
     </tbody>

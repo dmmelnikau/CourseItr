@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CourseItr.Controllers
 {
-
+    [Authorize(Roles = "Admin")]
     public class RolesController : Controller
     {
         readonly RoleManager<IdentityRole> _roleManager;
@@ -18,7 +18,7 @@ namespace CourseItr.Controllers
             _roleManager = roleManager;
             _userManager = userManager;
         }
-        [Authorize(Roles = "Admin,User")]
+       
 
         public IActionResult UserList() => View(_userManager.Users.ToList());
         [Authorize(Roles = "Admin")]

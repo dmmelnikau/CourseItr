@@ -14,10 +14,11 @@ using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CourseItr.Controllers
 {
-
+    [Authorize]
     public class MathTaskController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -140,7 +141,7 @@ namespace CourseItr.Controllers
 
             return RedirectToAction(nameof(ShowAllBlobs));
         }
-
+        [AllowAnonymous]
         public async Task<IActionResult> Download(string blobName)
         {
             CloudBlockBlob blockBlob;
@@ -157,6 +158,7 @@ namespace CourseItr.Controllers
             Stream blobStream = blockBlob.OpenReadAsync().Result;
             return File(blobStream, blockBlob.Properties.ContentType, blockBlob.Name);
         }
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUpload(string blobName)
         {
             string blobstorageconnection = _configuration.GetValue<string>("blobstorage");
@@ -168,6 +170,7 @@ namespace CourseItr.Controllers
             await blob.DeleteIfExistsAsync();
             return RedirectToAction("ShowAllBlobs", "MTask");
         }
+        [AllowAnonymous]
         public async Task<IActionResult> ShowAllBlobs()
         {
             string blobstorageconnection = _configuration.GetValue<string>("blobstorage");
@@ -236,8 +239,7 @@ namespace CourseItr.Controllers
                 return NotFound();
             }
             ViewBag.Topics = new SelectList(_context.MathTopics, "Id", "Name", mathTask.Name);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", mathTask.UserId);
-
+        
             return View(mathTask);
         }
 
@@ -252,7 +254,8 @@ namespace CourseItr.Controllers
             {
                 return NotFound();
             }
-
+            var user = userManager.FindByNameAsync(User.Identity.Name).Result;
+            mathTask.UserId = user.Id;
             if (ModelState.IsValid)
             {
                 try
@@ -274,7 +277,6 @@ namespace CourseItr.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.Topics = new SelectList(_context.MathTopics, "Id", "Name", mathTask.Name);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", mathTask.UserId);
             return View(mathTask);
         }
 
